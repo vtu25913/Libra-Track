@@ -1,0 +1,2761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LibraTrack - Library Management System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #3498db;
+            --primary-dark: #2980b9;
+            --secondary: #2c3e50;
+            --accent: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #34495e;
+            --success: #2ecc71;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --gray: #95a5a6;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --radius: 8px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background-color: var(--secondary);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo i {
+            margin-right: 10px;
+            color: var(--primary);
+        }
+
+        .logo span {
+            color: var(--primary);
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        nav ul li {
+            margin-left: 1.5rem;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            display: flex;
+            align-items: center;
+        }
+
+        nav ul li a i {
+            margin-right: 5px;
+        }
+
+        nav ul li a:hover {
+            color: var(--primary);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-role {
+            background-color: var(--primary);
+            padding: 3px 8px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+
+        main {
+            padding: 2rem 0;
+            min-height: calc(100vh - 140px);
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 3fr;
+            gap: 2rem;
+        }
+
+        .sidebar {
+            background-color: white;
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            height: fit-content;
+        }
+
+        .sidebar h3 {
+            margin-bottom: 1rem;
+            color: var(--secondary);
+            border-bottom: 2px solid var(--light);
+            padding-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .sidebar h3 i {
+            margin-right: 10px;
+        }
+
+        .content {
+            background-color: white;
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+        }
+
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .search-bar {
+            display: flex;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .search-bar input {
+            flex: 1;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px 0 0 4px;
+            font-size: 1rem;
+        }
+
+        .search-bar button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0 1.5rem;
+            border-radius: 0 4px 4px 0;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .search-bar button:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .book-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .book-card {
+            background-color: var(--light);
+            border-radius: var(--radius);
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .book-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .book-cover {
+            height: 200px;
+            background-color: var(--dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+            text-align: center;
+            padding: 10px;
+        }
+
+        .book-info {
+            padding: 1rem;
+        }
+
+        .book-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--secondary);
+        }
+
+        .book-author {
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+
+        .book-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 0.85rem;
+        }
+
+        .book-quantity {
+            color: var(--dark);
+            font-weight: 500;
+        }
+
+        .book-status {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .status-available {
+            background-color: var(--success);
+            color: white;
+        }
+
+        .status-borrowed {
+            background-color: var(--accent);
+            color: white;
+        }
+
+        .status-out-of-stock {
+            background-color: var(--gray);
+            color: white;
+        }
+
+        .book-actions {
+            margin-top: 0.5rem;
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .book-actions .btn {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.8rem;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            border-radius: var(--radius);
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 2rem;
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 1rem;
+            right: 1.5rem;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .modal-header {
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-body {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 1.5rem;
+        }
+
+        .book-details-cover {
+            height: 250px;
+            background-color: var(--dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            border-radius: 4px;
+            text-align: center;
+            padding: 10px;
+        }
+
+        .book-details-info h3 {
+            margin-bottom: 0.5rem;
+            color: var(--secondary);
+        }
+
+        .book-details-info p {
+            margin-bottom: 0.5rem;
+        }
+
+        .action-buttons {
+            margin-top: 1.5rem;
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn i {
+            margin-right: 8px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background-color: var(--light);
+            color: var(--dark);
+        }
+
+        .btn-secondary:hover {
+            background-color: #dde4e6;
+        }
+
+        .btn-danger {
+            background-color: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+
+        .btn-success {
+            background-color: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #27ae60;
+        }
+
+        .btn-warning {
+            background-color: var(--warning);
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background-color: #e67e22;
+        }
+
+        .auth-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 80vh;
+        }
+
+        .auth-form {
+            background-color: white;
+            border-radius: var(--radius);
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            width: 100%;
+            max-width: 450px;
+        }
+
+        .auth-form h2 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: var(--secondary);
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .form-footer {
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+
+        .form-footer a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .form-footer a:hover {
+            text-decoration: underline;
+        }
+
+        .profile-section {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 2rem;
+        }
+
+        .profile-card {
+            background-color: white;
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            margin: 0 auto 1rem;
+        }
+
+        .profile-details {
+            background-color: white;
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+        }
+
+        .detail-row {
+            display: flex;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--light);
+        }
+
+        .detail-label {
+            font-weight: 600;
+            width: 150px;
+            color: var(--dark);
+        }
+
+        .books-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .books-table th, .books-table td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .books-table th {
+            background-color: var(--light);
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .books-table tr:hover {
+            background-color: #f9f9f9;
+        }
+
+        footer {
+            background-color: var(--secondary);
+            color: white;
+            text-align: center;
+            padding: 1.5rem 0;
+            margin-top: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            nav ul {
+                justify-content: center;
+            }
+            
+            .modal-body {
+                grid-template-columns: 1fr;
+            }
+            
+            .profile-section {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .active {
+            color: var(--primary) !important;
+        }
+
+        .error-message {
+            color: var(--danger);
+            font-size: 0.85rem;
+            margin-top: 0.25rem;
+            display: block;
+        }
+
+        .form-group.error input, .form-group.error select {
+            border-color: var(--danger);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background-color: white;
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--dark);
+            font-weight: 500;
+        }
+
+        .librarian-books-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .quick-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .overdue {
+            color: var(--danger);
+            font-weight: bold;
+        }
+
+        .due-soon {
+            color: var(--warning);
+            font-weight: bold;
+        }
+
+        .quantity-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .quantity-badge {
+            background-color: var(--primary);
+            color: white;
+            padding: 0.2rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 4rem 0;
+            text-align: center;
+            border-radius: var(--radius);
+            margin-bottom: 2rem;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 2rem;
+        }
+
+        .hero-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .feature-card {
+            background-color: white;
+            border-radius: var(--radius);
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+            margin-bottom: 1rem;
+            color: var(--secondary);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: var(--gray);
+        }
+
+        .error {
+            color: var(--danger);
+            text-align: center;
+            padding: 1rem;
+            background-color: #ffeaea;
+            border-radius: var(--radius);
+            margin: 1rem 0;
+        }
+
+        .demo-notice {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: var(--radius);
+            padding: 1rem;
+            margin: 1rem 0;
+            text-align: center;
+            color: #856404;
+        }
+
+        /* Notification Styles */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            z-index: 10000;
+            animation: slideIn 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            max-width: 300px;
+        }
+
+        .notification.success {
+            background: #2ecc71;
+            color: white;
+        }
+
+        .notification.error {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .notification.info {
+            background: #3498db;
+            color: white;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Export button style */
+        .export-btn {
+            background-color: #9b59b6 !important;
+        }
+
+        .export-btn:hover {
+            background-color: #8e44ad !important;
+        }
+
+        /* Enhanced Export Modal Styles */
+        .export-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .export-option {
+            background-color: var(--light);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .export-option:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow);
+            border-color: var(--primary);
+        }
+
+        .export-option.selected {
+            border-color: var(--primary);
+            background-color: rgba(52, 152, 219, 0.1);
+        }
+
+        .export-option i {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .export-option h3 {
+            margin-bottom: 0.5rem;
+            color: var(--secondary);
+        }
+
+        .export-option p {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .export-filters {
+            margin: 1.5rem 0;
+            padding: 1rem;
+            background-color: var(--light);
+            border-radius: var(--radius);
+        }
+
+        .export-filters.hidden {
+            display: none;
+        }
+
+        .filter-group {
+            margin-bottom: 1rem;
+        }
+
+        .filter-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .filter-group input, .filter-group select {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .date-range {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .export-progress {
+            margin: 1rem 0;
+            text-align: center;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background-color: var(--light);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: var(--primary);
+            width: 0%;
+            transition: width 0.3s;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-book"></i>Libra<span>Track</span>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="#" class="nav-link active" data-page="home"><i class="fas fa-home"></i>Home</a></li>
+                        <li><a href="#" class="nav-link" data-page="dashboard"><i class="fas fa-book"></i>Books</a></li>
+                        <li><a href="#" class="nav-link" data-page="mybooks"><i class="fas fa-book-open"></i>My Books</a></li>
+                        <li><a href="#" class="nav-link" data-page="profile"><i class="fas fa-user"></i>Profile</a></li>
+                        <li id="auth-link"><a href="#" class="nav-link" data-page="login"><i class="fas fa-sign-in-alt"></i>Login</a></li>
+                    </ul>
+                </nav>
+                <div class="user-info hidden" id="user-info">
+                    <span id="username-display">John Doe</span>
+                    <span class="user-role" id="user-role">Student</span>
+                    <button class="btn btn-secondary" id="logout-btn"><i class="fas fa-sign-out-alt"></i>Logout</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Home Page -->
+        <section id="home-section">
+            <div class="hero">
+                <h1>Welcome to LibraTrack</h1>
+                <p>Your comprehensive library management solution for tracking books, managing borrowings, and connecting readers with their next great read.</p>
+                <div class="hero-buttons" id="home-auth-buttons">
+                    <button class="btn btn-primary" id="home-login-btn"><i class="fas fa-sign-in-alt"></i> Login</button>
+                    <button class="btn btn-secondary" id="home-signup-btn"><i class="fas fa-user-plus"></i> Sign Up</button>
+                </div>
+                <div class="hero-buttons hidden" id="home-user-buttons">
+                    <button class="btn btn-primary" id="home-books-btn"><i class="fas fa-book"></i> Browse Books</button>
+                </div>
+            </div>
+
+            <div class="features">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <h3>Easy Book Discovery</h3>
+                    <p>Find books quickly with our powerful search and filtering system. Browse by title, author, genre, or ISBN.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-exchange-alt"></i>
+                    </div>
+                    <h3>Simple Borrowing System</h3>
+                    <p>Borrow and return books with just a few clicks. Track due dates and manage your reading list easily.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Library Analytics</h3>
+                    <p>For librarians, get insights into borrowing patterns, popular books, and library usage statistics.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Login Form -->
+        <section id="login-section" class="auth-container hidden">
+            <div class="auth-form">
+                <h2><i class="fas fa-sign-in-alt"></i> Login to LibraTrack</h2>
+                <form id="login-form">
+                    <div class="form-group">
+                        <label for="login-email">Email</label>
+                        <input type="email" id="login-email" required>
+                        <span class="error-message" id="login-email-error"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">Password</label>
+                        <input type="password" id="login-password" required>
+                        <span class="error-message" id="login-password-error"></span>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;"><i class="fas fa-sign-in-alt"></i> Login</button>
+                </form>
+                <div class="form-footer">
+                    <p>Don't have an account? <a href="#" id="show-signup">Sign up here</a></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Signup Form -->
+        <section id="signup-section" class="auth-container hidden">
+            <div class="auth-form">
+                <h2><i class="fas fa-user-plus"></i> Create an Account</h2>
+                <form id="signup-form">
+                    <div class="form-group">
+                        <label for="signup-name">Full Name</label>
+                        <input type="text" id="signup-name" required>
+                        <span class="error-message" id="signup-name-error"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-email">Email</label>
+                        <input type="email" id="signup-email" required>
+                        <span class="error-message" id="signup-email-error"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-password">Password</label>
+                        <input type="password" id="signup-password" required>
+                        <span class="error-message" id="signup-password-error"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-role">Role</label>
+                        <select id="signup-role" required>
+                            <option value="">Select Role</option>
+                            <option value="student">Student</option>
+                            <option value="librarian">Librarian</option>
+                        </select>
+                        <span class="error-message" id="signup-role-error"></span>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;"><i class="fas fa-user-plus"></i> Sign Up</button>
+                </form>
+                <div class="form-footer">
+                    <p>Already have an account? <a href="#" id="show-login">Login here</a></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dashboard -->
+        <section id="dashboard-section" class="hidden">
+            <div class="dashboard">
+                <aside class="sidebar">
+                    <h3><i class="fas fa-bolt"></i> Quick Actions</h3>
+                    <div class="quick-actions" id="student-quick-actions"></div>
+                    <div id="librarian-actions" class="hidden">
+                        <h3><i class="fas fa-tools"></i> Librarian Tools</h3>
+                        <div class="quick-actions">
+                            <button class="btn btn-primary" style="width: 100%;" id="add-book-sidebar-btn"><i class="fas fa-plus"></i> Add New Book</button>
+                            <button class="btn btn-secondary" style="width: 100%;" id="view-borrowings-sidebar-btn"><i class="fas fa-list"></i> View All Borrowings</button>
+                            <button class="btn export-btn" style="width: 100%;" id="export-data-sidebar-btn"><i class="fas fa-download"></i> Export Data</button>
+                        </div>
+                    </div>
+                </aside>
+
+                <section class="content">
+                    <div class="content-header">
+                        <h2>Library Books</h2>
+                        <div class="search-bar">
+                            <input type="text" id="search-input" placeholder="Search by title, author, or ISBN...">
+                            <button id="search-button"><i class="fas fa-search"></i></button>
+                        </div>
+                    </div>
+
+                    <div id="books-loading" class="loading hidden">
+                        <i class="fas fa-spinner fa-spin"></i> Loading books...
+                    </div>
+
+                    <div id="books-error" class="error hidden">
+                        Failed to load books. Please try again.
+                    </div>
+
+                    <div class="book-grid" id="bookGrid"></div>
+                </section>
+            </div>
+        </section>
+
+        <!-- My Books Section -->
+        <section id="mybooks-section" class="hidden">
+            <div class="content">
+                <div class="content-header">
+                    <h2><i class="fas fa-book-open"></i> My Books</h2>
+                    <div id="librarian-books-controls" class="hidden">
+                        <button class="btn btn-primary" id="add-book-mybooks-btn"><i class="fas fa-plus"></i> Add New Book</button>
+                        <button class="btn export-btn" id="export-books-btn"><i class="fas fa-download"></i> Export Data</button>
+                    </div>
+                </div>
+                
+                <div id="student-books-view">
+                    <h3>My Borrowed Books</h3>
+                    <div id="mybooks-loading" class="loading hidden">
+                        <i class="fas fa-spinner fa-spin"></i> Loading your books...
+                    </div>
+                    <table class="books-table">
+                        <thead>
+                            <tr>
+                                <th>Book Title</th>
+                                <th>Author</th>
+                                <th>Borrowed Date</th>
+                                <th>Due Date</th>
+                                <th>Returned Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="mybooks-table"></tbody>
+                    </table>
+                </div>
+                
+                <div id="librarian-books-view" class="hidden">
+                    <h3>All Library Books</h3>
+                    <div class="book-grid" id="librarian-book-grid"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Profile Section -->
+        <section id="profile-section" class="hidden">
+            <div class="profile-section">
+                <div class="profile-card">
+                    <div class="profile-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <h2 id="profile-name">John Doe</h2>
+                    <p id="profile-role" class="user-role">Student</p>
+                    <p id="profile-email">john.doe@example.com</p>
+                </div>
+                <div class="profile-details">
+                    <h2><i class="fas fa-info-circle"></i> Personal Information</h2>
+                    <div class="detail-row">
+                        <div class="detail-label">Full Name:</div>
+                        <div id="profile-fullname">John Doe</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Email:</div>
+                        <div id="profile-email-detail">john.doe@example.com</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Role:</div>
+                        <div id="profile-role-detail">Student</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Member Since:</div>
+                        <div id="profile-joined">January 2023</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Books Borrowed:</div>
+                        <div id="profile-borrowed">5</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Librarian Dashboard -->
+        <section id="librarian-dashboard" class="hidden">
+            <div class="content">
+                <div class="content-header">
+                    <h2><i class="fas fa-chart-bar"></i> Library Statistics</h2>
+                </div>
+                
+                <div id="stats-loading" class="loading hidden">
+                    <i class="fas fa-spinner fa-spin"></i> Loading statistics...
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number" id="total-books">0</div>
+                        <div class="stat-label">Total Books</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="available-books">0</div>
+                        <div class="stat-label">Available Books</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="borrowed-books">0</div>
+                        <div class="stat-label">Borrowed Books</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="total-users">0</div>
+                        <div class="stat-label">Registered Users</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="overdue-books">0</div>
+                        <div class="stat-label">Overdue Books</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="total-borrowings">0</div>
+                        <div class="stat-label">Total Borrowings</div>
+                    </div>
+                </div>
+
+                <div class="content-header">
+                    <h2><i class="fas fa-exchange-alt"></i> Recent Borrowings</h2>
+                </div>
+                
+                <table class="books-table">
+                    <thead>
+                        <tr>
+                            <th>Book Title</th>
+                            <th>User</th>
+                            <th>Borrowed Date</th>
+                            <th>Due Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="all-borrowings-table"></tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <!-- Book Details Modal -->
+    <div class="modal" id="bookModal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeModal">&times;</span>
+            <div class="modal-header">
+                <h2 id="modalBookTitle">Book Title</h2>
+            </div>
+            <div class="modal-body">
+                <div class="book-details-cover" id="modalBookCover">Book Cover</div>
+                <div class="book-details-info">
+                    <h3 id="modalBookAuthor">Author Name</h3>
+                    <p><strong>ISBN:</strong> <span id="modalBookIsbn">1234567890</span></p>
+                    <p><strong>Genre:</strong> <span id="modalBookGenre">Fiction</span></p>
+                    <p><strong>Published:</strong> <span id="modalBookYear">2023</span></p>
+                    <p><strong>Available Copies:</strong> <span id="modalBookQuantity">5</span></p>
+                    <p><strong>Status:</strong> <span class="book-status status-available" id="modalBookStatus">Available</span></p>
+                    <p id="modalBookDescription">Book description goes here.</p>
+                    
+                    <div class="action-buttons" id="student-actions">
+                        <button class="btn btn-primary" id="borrowBtn"><i class="fas fa-book"></i> Borrow Book</button>
+                    </div>
+                    <div class="action-buttons hidden" id="librarian-modal-actions">
+                        <button class="btn btn-danger" id="deleteBookBtn"><i class="fas fa-trash"></i> Delete Book</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Book Modal -->
+    <div class="modal" id="addBookModal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeAddBookModal">&times;</span>
+            <div class="modal-header">
+                <h2><i class="fas fa-plus"></i> Add New Book</h2>
+            </div>
+            <div class="modal-body">
+                <form id="add-book-form">
+                    <div class="form-group">
+                        <label for="book-title">Book Title</label>
+                        <input type="text" id="book-title" required>
+                        <span class="error-message" id="book-title-error"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="book-author">Author</label>
+                        <input type="text" id="book-author" required>
+                        <span class="error-message" id="book-author-error"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="book-isbn">ISBN</label>
+                        <input type="text" id="book-isbn" required>
+                        <span class="error-message" id="book-isbn-error"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="book-genre">Genre</label>
+                        <select id="book-genre" required>
+                            <option value="">Select Genre</option>
+                            <option value="Fiction">Fiction</option>
+                            <option value="Non-Fiction">Non-Fiction</option>
+                            <option value="Science">Science</option>
+                            <option value="Technology">Technology</option>
+                            <option value="History">History</option>
+                            <option value="Fantasy">Fantasy</option>
+                            <option value="Mystery">Mystery</option>
+                            <option value="Biography">Biography</option>
+                        </select>
+                        <span class="error-message" id="book-genre-error"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="book-year">Publication Year</label>
+                        <input type="number" id="book-year" min="1900" max="2025" required>
+                        <span class="error-message" id="book-year-error"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="book-quantity">Quantity</label>
+                        <input type="number" id="book-quantity" min="1" max="100" value="1" required>
+                        <span class="error-message" id="book-quantity-error"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="book-description">Description</label>
+                        <textarea id="book-description" rows="4" style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 4px;"></textarea>
+                    </div>
+                    <div class="action-buttons">
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Add Book</button>
+                        <button type="button" class="btn btn-secondary" id="cancelAddBook">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Book Modal -->
+    <div class="modal" id="editBookModal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeEditBookModal">&times;</span>
+            <div class="modal-header">
+                <h2><i class="fas fa-edit"></i> Edit Book</h2>
+            </div>
+            <div class="modal-body">
+                <form id="edit-book-form">
+                    <input type="hidden" id="edit-book-id">
+                    <div class="form-group">
+                        <label for="edit-book-title">Book Title</label>
+                        <input type="text" id="edit-book-title" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-book-author">Author</label>
+                        <input type="text" id="edit-book-author" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-book-isbn">ISBN</label>
+                        <input type="text" id="edit-book-isbn" required readonly>
+                        <small style="color: #666;">ISBN cannot be changed</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-book-genre">Genre</label>
+                        <select id="edit-book-genre" required>
+                            <option value="">Select Genre</option>
+                            <option value="Fiction">Fiction</option>
+                            <option value="Non-Fiction">Non-Fiction</option>
+                            <option value="Science">Science</option>
+                            <option value="Technology">Technology</option>
+                            <option value="History">History</option>
+                            <option value="Fantasy">Fantasy</option>
+                            <option value="Mystery">Mystery</option>
+                            <option value="Biography">Biography</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-book-year">Publication Year</label>
+                        <input type="number" id="edit-book-year" min="1900" max="2025" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-book-quantity">Quantity</label>
+                        <input type="number" id="edit-book-quantity" min="1" max="100" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-book-description">Description</label>
+                        <textarea id="edit-book-description" rows="4" style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 4px;"></textarea>
+                    </div>
+                    <div class="action-buttons">
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Update Book</button>
+                        <button type="button" class="btn btn-secondary" id="cancelEditBook">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- All Borrowings Modal -->
+    <div class="modal" id="allBorrowingsModal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeAllBorrowingsModal">&times;</span>
+            <div class="modal-header">
+                <h2><i class="fas fa-list"></i> All Book Borrowings</h2>
+            </div>
+            <div class="modal-body">
+                <table class="books-table">
+                    <thead>
+                        <tr>
+                            <th>Book Title</th>
+                            <th>User</th>
+                            <th>Borrowed Date</th>
+                            <th>Due Date</th>
+                            <th>Returned Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="all-borrowings-list"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Export Data Modal -->
+    <div class="modal" id="exportDataModal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeExportDataModal">&times;</span>
+            <div class="modal-header">
+                <h2><i class="fas fa-download"></i> Export Library Data</h2>
+            </div>
+            <div class="modal-body">
+                <div class="export-options">
+                    <div class="export-option" data-type="books">
+                        <i class="fas fa-book"></i>
+                        <h3>Books Data</h3>
+                        <p>Export complete catalog of library books</p>
+                    </div>
+                    <div class="export-option" data-type="borrowings">
+                        <i class="fas fa-exchange-alt"></i>
+                        <h3>Borrowing History</h3>
+                        <p>Export all borrowing records</p>
+                    </div>
+                    <div class="export-option" data-type="users">
+                        <i class="fas fa-users"></i>
+                        <h3>User Data</h3>
+                        <p>Export registered user information</p>
+                    </div>
+                    <div class="export-option" data-type="overdue">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <h3>Overdue Books</h3>
+                        <p>Export currently overdue books</p>
+                    </div>
+                </div>
+
+                <div class="export-filters hidden" id="exportFilters">
+                    <h3>Filter Options</h3>
+                    <div class="filter-group">
+                        <label for="export-date-range">Date Range</label>
+                        <div class="date-range">
+                            <input type="date" id="export-start-date">
+                            <input type="date" id="export-end-date">
+                        </div>
+                    </div>
+                    <div class="filter-group">
+                        <label for="export-status">Status Filter</label>
+                        <select id="export-status">
+                            <option value="all">All Records</option>
+                            <option value="active">Active Only</option>
+                            <option value="returned">Returned Only</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="export-format">Export Format</label>
+                        <select id="export-format">
+                            <option value="csv">CSV</option>
+                            <option value="json">JSON</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="export-progress hidden" id="exportProgress">
+                    <p>Preparing your export...</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="exportProgressFill"></div>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-primary" id="confirmExportBtn" disabled><i class="fas fa-download"></i> Export Data</button>
+                    <button class="btn btn-secondary" id="cancelExportBtn">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 LibraTrack - Library Book Tracking System</p>
+        </div>
+    </footer>
+
+    <script>
+    // API Base URL
+    const API_BASE = 'http://localhost:3000/api';
+
+    // Global data stores
+    let books = [];
+    let borrowedBooks = [];
+    let currentUser = null;
+    let selectedExportType = null;
+
+    // Load current user from localStorage
+    function loadCurrentUser() {
+        try {
+            const userData = localStorage.getItem('currentUser');
+            if (userData) {
+                currentUser = JSON.parse(userData);
+            }
+        } catch (error) {
+            console.error('Error loading user from storage:', error);
+            currentUser = null;
+        }
+    }
+
+    // DOM Elements
+    const homeSection = document.getElementById('home-section');
+    const homeAuthButtons = document.getElementById('home-auth-buttons');
+    const homeUserButtons = document.getElementById('home-user-buttons');
+    const homeLoginBtn = document.getElementById('home-login-btn');
+    const homeSignupBtn = document.getElementById('home-signup-btn');
+    const homeBooksBtn = document.getElementById('home-books-btn');
+    const bookGrid = document.getElementById('bookGrid');
+    const librarianBookGrid = document.getElementById('librarian-book-grid');
+    const bookModal = document.getElementById('bookModal');
+    const addBookModal = document.getElementById('addBookModal');
+    const editBookModal = document.getElementById('editBookModal');
+    const allBorrowingsModal = document.getElementById('allBorrowingsModal');
+    const exportDataModal = document.getElementById('exportDataModal');
+    const closeModal = document.getElementById('closeModal');
+    const closeAddBookModal = document.getElementById('closeAddBookModal');
+    const closeEditBookModal = document.getElementById('closeEditBookModal');
+    const closeAllBorrowingsModal = document.getElementById('closeAllBorrowingsModal');
+    const closeExportDataModal = document.getElementById('closeExportDataModal');
+    const borrowBtn = document.getElementById('borrowBtn');
+    const deleteBookBtn = document.getElementById('deleteBookBtn');
+    const addBookSidebarBtn = document.getElementById('add-book-sidebar-btn');
+    const addBookMyBooksBtn = document.getElementById('add-book-mybooks-btn');
+    const viewBorrowingsSidebarBtn = document.getElementById('view-borrowings-sidebar-btn');
+    const exportDataSidebarBtn = document.getElementById('export-data-sidebar-btn');
+    const cancelAddBook = document.getElementById('cancelAddBook');
+    const cancelEditBook = document.getElementById('cancelEditBook');
+    const loginSection = document.getElementById('login-section');
+    const signupSection = document.getElementById('signup-section');
+    const dashboardSection = document.getElementById('dashboard-section');
+    const mybooksSection = document.getElementById('mybooks-section');
+    const profileSection = document.getElementById('profile-section');
+    const librarianDashboard = document.getElementById('librarian-dashboard');
+    const studentBooksView = document.getElementById('student-books-view');
+    const librarianBooksView = document.getElementById('librarian-books-view');
+    const librarianBooksControls = document.getElementById('librarian-books-controls');
+    const loginForm = document.getElementById('login-form');
+    const signupForm = document.getElementById('signup-form');
+    const addBookForm = document.getElementById('add-book-form');
+    const editBookForm = document.getElementById('edit-book-form');
+    const authLink = document.getElementById('auth-link');
+    const userInfo = document.getElementById('user-info');
+    const usernameDisplay = document.getElementById('username-display');
+    const userRole = document.getElementById('user-role');
+    const logoutBtn = document.getElementById('logout-btn');
+    const showSignup = document.getElementById('show-signup');
+    const showLogin = document.getElementById('show-login');
+    const librarianActions = document.getElementById('librarian-actions');
+    const studentActions = document.getElementById('student-actions');
+    const librarianModalActions = document.getElementById('librarian-modal-actions');
+    const mybooksTable = document.getElementById('mybooks-table');
+    const allBorrowingsTable = document.getElementById('all-borrowings-table');
+    const allBorrowingsList = document.getElementById('all-borrowings-list');
+    const navLinks = document.querySelectorAll('.nav-link');
+    const studentQuickActions = document.getElementById('student-quick-actions');
+    const searchInput = document.getElementById('search-input');
+    const searchButton = document.getElementById('search-button');
+    const booksLoading = document.getElementById('books-loading');
+    const booksError = document.getElementById('books-error');
+    const mybooksLoading = document.getElementById('mybooks-loading');
+    const statsLoading = document.getElementById('stats-loading');
+    const exportBooksBtn = document.getElementById('export-books-btn');
+    const exportOptions = document.querySelectorAll('.export-option');
+    const exportFilters = document.getElementById('exportFilters');
+    const exportProgress = document.getElementById('exportProgress');
+    const exportProgressFill = document.getElementById('exportProgressFill');
+    const confirmExportBtn = document.getElementById('confirmExportBtn');
+    const cancelExportBtn = document.getElementById('cancelExportBtn');
+    const exportStartDate = document.getElementById('export-start-date');
+    const exportEndDate = document.getElementById('export-end-date');
+    const exportStatus = document.getElementById('export-status');
+    const exportFormat = document.getElementById('export-format');
+
+    let currentBookForBorrow = null;
+
+    // API Helper Functions
+    async function apiCall(endpoint, options = {}) {
+        try {
+            const response = await fetch(`${API_BASE}${endpoint}`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...options.headers
+                },
+                ...options
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                let errorData;
+                try {
+                    errorData = JSON.parse(errorText);
+                } catch {
+                    errorData = { error: errorText || 'Request failed' };
+                }
+                throw new Error(errorData.error || 'Request failed');
+            }
+
+            return await response.json();
+        } catch (error) {
+            console.error('API call failed:', error);
+            throw error;
+        }
+    }
+
+    async function authenticatedApiCall(endpoint, options = {}) {
+        loadCurrentUser();
+        
+        if (!currentUser) {
+            throw new Error('User not authenticated - please log in again');
+        }
+        
+        const userId = currentUser.id.toString();
+
+        return apiCall(endpoint, {
+            ...options,
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': userId,
+                ...options.headers
+            }
+        });
+    }
+
+    // Notification function
+    function showNotification(message, type = 'info') {
+        const existingNotifications = document.querySelectorAll('.notification');
+        existingNotifications.forEach(notification => notification.remove());
+
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        
+        let icon = 'info-circle';
+        if (type === 'success') icon = 'check';
+        if (type === 'error') icon = 'exclamation-triangle';
+        
+        notification.innerHTML = `
+            <i class="fas fa-${icon}"></i>
+            ${message}
+        `;
+        
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            if (notification.parentElement) {
+                notification.style.animation = 'slideIn 0.3s ease reverse';
+                setTimeout(() => notification.remove(), 300);
+            }
+        }, 3000);
+    }
+
+    // Initialize the application
+    async function initApp() {
+        loadCurrentUser();
+        
+        if (currentUser) {
+            updateUIForUser();
+            showHomePage();
+            await loadBooks();
+            await loadBorrowedBooks();
+        } else {
+            showHomePage();
+            await loadBooks();
+        }
+        
+        setupEventListeners();
+    }
+
+    // Set up all event listeners
+    function setupEventListeners() {
+        // Navigation
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const page = link.getAttribute('data-page');
+                showPage(page);
+            });
+        });
+
+        // Home page buttons
+        homeLoginBtn.addEventListener('click', () => showLoginPage());
+        homeSignupBtn.addEventListener('click', () => showSignupPage());
+        homeBooksBtn.addEventListener('click', () => showDashboard());
+
+        // Auth forms
+        loginForm.addEventListener('submit', handleLogin);
+        signupForm.addEventListener('submit', handleSignup);
+        
+        // Auth links
+        showSignup.addEventListener('click', (e) => {
+            e.preventDefault();
+            showSignupPage();
+        });
+        
+        showLogin.addEventListener('click', (e) => {
+            e.preventDefault();
+            showLoginPage();
+        });
+        
+        // Logout
+        logoutBtn.addEventListener('click', handleLogout);
+        
+        // Modals
+        closeModal.addEventListener('click', () => bookModal.style.display = 'none');
+        closeAddBookModal.addEventListener('click', () => addBookModal.style.display = 'none');
+        closeEditBookModal.addEventListener('click', () => editBookModal.style.display = 'none');
+        closeAllBorrowingsModal.addEventListener('click', () => allBorrowingsModal.style.display = 'none');
+        closeExportDataModal.addEventListener('click', () => exportDataModal.style.display = 'none');
+        
+        window.addEventListener('click', (event) => {
+            if (event.target === bookModal) bookModal.style.display = 'none';
+            if (event.target === addBookModal) addBookModal.style.display = 'none';
+            if (event.target === editBookModal) editBookModal.style.display = 'none';
+            if (event.target === allBorrowingsModal) allBorrowingsModal.style.display = 'none';
+            if (event.target === exportDataModal) exportDataModal.style.display = 'none';
+        });
+        
+        // Librarian actions
+        addBookSidebarBtn.addEventListener('click', () => addBookModal.style.display = 'flex');
+        addBookMyBooksBtn.addEventListener('click', () => addBookModal.style.display = 'flex');
+        viewBorrowingsSidebarBtn.addEventListener('click', () => displayAllBorrowings());
+        exportDataSidebarBtn.addEventListener('click', () => openExportDataModal());
+        cancelAddBook.addEventListener('click', () => addBookModal.style.display = 'none');
+        cancelEditBook.addEventListener('click', () => editBookModal.style.display = 'none');
+        
+        addBookForm.addEventListener('submit', handleAddBook);
+        editBookForm.addEventListener('submit', handleEditBook);
+        
+        // Export functionality
+        exportBooksBtn.addEventListener('click', () => openExportDataModal());
+        
+        // Search functionality
+        searchButton.addEventListener('click', performSearch);
+        searchInput.addEventListener('keyup', (event) => {
+            if (event.key === 'Enter') performSearch();
+        });
+
+        // Export modal functionality
+        exportOptions.forEach(option => {
+            option.addEventListener('click', () => selectExportOption(option));
+        });
+
+        confirmExportBtn.addEventListener('click', handleExport);
+        cancelExportBtn.addEventListener('click', () => exportDataModal.style.display = 'none');
+    }
+
+    // Show specific page
+    async function showPage(page) {
+        // Hide all sections first
+        homeSection.classList.add('hidden');
+        loginSection.classList.add('hidden');
+        signupSection.classList.add('hidden');
+        dashboardSection.classList.add('hidden');
+        mybooksSection.classList.add('hidden');
+        profileSection.classList.add('hidden');
+        librarianDashboard.classList.add('hidden');
+        
+        // Remove active class from all nav links
+        navLinks.forEach(link => link.classList.remove('active'));
+        
+        // Show the requested page
+        switch(page) {
+            case 'home':
+                showHomePage();
+                break;
+            case 'login':
+                showLoginPage();
+                break;
+            case 'dashboard':
+                if (currentUser) {
+                    if (currentUser.role === 'librarian') {
+                        showLibrarianDashboard();
+                    } else {
+                        showDashboard();
+                    }
+                } else {
+                    showLoginPage();
+                }
+                break;
+            case 'mybooks':
+                if (currentUser) {
+                    showMyBooks();
+                } else {
+                    showLoginPage();
+                }
+                break;
+            case 'profile':
+                if (currentUser) {
+                    showProfile();
+                } else {
+                    showLoginPage();
+                }
+                break;
+            default:
+                showHomePage();
+        }
+    }
+
+    // Show home page
+    function showHomePage() {
+        homeSection.classList.remove('hidden');
+        document.querySelector('[data-page="home"]').classList.add('active');
+        
+        if (currentUser) {
+            homeAuthButtons.classList.add('hidden');
+            homeUserButtons.classList.remove('hidden');
+        } else {
+            homeAuthButtons.classList.remove('hidden');
+            homeUserButtons.classList.add('hidden');
+        }
+    }
+
+    // Show login page
+    function showLoginPage() {
+        loginSection.classList.remove('hidden');
+        signupSection.classList.add('hidden');
+        homeSection.classList.add('hidden');
+        authLink.querySelector('a').classList.add('active');
+    }
+
+    // Show signup page
+    function showSignupPage() {
+        loginSection.classList.add('hidden');
+        signupSection.classList.remove('hidden');
+        homeSection.classList.add('hidden');
+    }
+
+    // Show dashboard
+    async function showDashboard() {
+        dashboardSection.classList.remove('hidden');
+        homeSection.classList.add('hidden');
+        document.querySelector('[data-page="dashboard"]').classList.add('active');
+        await loadBooks();
+    }
+
+    // Show librarian dashboard
+    async function showLibrarianDashboard() {
+        librarianDashboard.classList.remove('hidden');
+        homeSection.classList.add('hidden');
+        document.querySelector('[data-page="dashboard"]').classList.add('active');
+        await updateLibrarianStats();
+        await displayRecentBorrowings();
+    }
+
+    // Show my books
+    async function showMyBooks() {
+        mybooksSection.classList.remove('hidden');
+        homeSection.classList.add('hidden');
+        document.querySelector('[data-page="mybooks"]').classList.add('active');
+        
+        if (currentUser.role === 'librarian') {
+            studentBooksView.classList.add('hidden');
+            librarianBooksView.classList.remove('hidden');
+            librarianBooksControls.classList.remove('hidden');
+            await displayLibrarianBooks();
+        } else {
+            studentBooksView.classList.remove('hidden');
+            librarianBooksView.classList.add('hidden');
+            librarianBooksControls.classList.add('hidden');
+            await displayBorrowedBooks();
+        }
+    }
+
+    // Show profile
+    function showProfile() {
+        profileSection.classList.remove('hidden');
+        homeSection.classList.add('hidden');
+        document.querySelector('[data-page="profile"]').classList.add('active');
+        updateProfile();
+    }
+
+    // Update UI based on user role
+    function updateUIForUser() {
+        if (currentUser) {
+            userInfo.classList.remove('hidden');
+            authLink.classList.add('hidden');
+            usernameDisplay.textContent = currentUser.name;
+            userRole.textContent = currentUser.role.charAt(0).toUpperCase() + currentUser.role.slice(1);
+            
+            if (currentUser.role === 'librarian') {
+                librarianActions.classList.remove('hidden');
+                studentQuickActions.innerHTML = '';
+            } else {
+                librarianActions.classList.add('hidden');
+                const userBorrowedCount = borrowedBooks.filter(b => !b.returned_date).length;
+                studentQuickActions.innerHTML = `
+                    <div class="quantity-info">
+                        <span>Books Borrowed:</span>
+                        <span class="quantity-badge">${userBorrowedCount}/3</span>
+                    </div>
+                `;
+            }
+            
+            homeAuthButtons.classList.add('hidden');
+            homeUserButtons.classList.remove('hidden');
+        } else {
+            userInfo.classList.add('hidden');
+            authLink.classList.remove('hidden');
+            homeAuthButtons.classList.remove('hidden');
+            homeUserButtons.classList.add('hidden');
+        }
+    }
+
+    // Update profile information
+    function updateProfile() {
+        if (!currentUser) return;
+        
+        document.getElementById('profile-name').textContent = currentUser.name;
+        document.getElementById('profile-role').textContent = currentUser.role.charAt(0).toUpperCase() + currentUser.role.slice(1);
+        document.getElementById('profile-email').textContent = currentUser.email;
+        document.getElementById('profile-fullname').textContent = currentUser.name;
+        document.getElementById('profile-email-detail').textContent = currentUser.email;
+        document.getElementById('profile-role-detail').textContent = currentUser.role.charAt(0).toUpperCase() + currentUser.role.slice(1);
+        document.getElementById('profile-joined').textContent = currentUser.joined || 'January 2023';
+        
+        const userBorrowedCount = borrowedBooks.filter(b => !b.returned_date).length;
+        document.getElementById('profile-borrowed').textContent = userBorrowedCount;
+    }
+
+    // Load books from backend
+    async function loadBooks() {
+        try {
+            booksLoading.classList.remove('hidden');
+            booksError.classList.add('hidden');
+            bookGrid.innerHTML = '';
+
+            const searchTerm = searchInput.value.trim();
+            const endpoint = searchTerm ? `/books?search=${encodeURIComponent(searchTerm)}` : '/books';
+            books = await apiCall(endpoint);
+            
+            displayBooks();
+            booksLoading.classList.add('hidden');
+        } catch (error) {
+            console.error('Error loading books:', error);
+            booksLoading.classList.add('hidden');
+            booksError.classList.remove('hidden');
+        }
+    }
+
+    // Load borrowed books from backend
+    async function loadBorrowedBooks() {
+        if (!currentUser) return;
+        
+        try {
+            mybooksLoading.classList.remove('hidden');
+            borrowedBooks = await authenticatedApiCall(`/users/${currentUser.id}/borrowings`);
+            mybooksLoading.classList.add('hidden');
+        } catch (error) {
+            console.error('Error loading borrowed books:', error);
+            mybooksLoading.classList.add('hidden');
+        }
+    }
+
+    // Display books in the grid
+    function displayBooks(booksToShow = books) {
+        bookGrid.innerHTML = '';
+        
+        if (booksToShow.length === 0) {
+            bookGrid.innerHTML = '<p>No books found.</p>';
+            return;
+        }
+        
+        booksToShow.forEach(book => {
+            const bookCard = document.createElement('div');
+            bookCard.className = 'book-card';
+            
+            let statusClass = 'status-available';
+            let statusText = 'Available';
+            
+            if (book.available === 0) {
+                statusClass = 'status-out-of-stock';
+                statusText = 'Out of Stock';
+            } else if (book.available < book.quantity) {
+                statusClass = 'status-borrowed';
+                statusText = 'Limited Copies';
+            }
+            
+            bookCard.innerHTML = `
+                <div class="book-cover" style="background-color: ${getRandomColor()}">
+                    ${book.title.substring(0, 20)}${book.title.length > 20 ? '...' : ''}
+                </div>
+                <div class="book-info">
+                    <div class="book-title">${book.title}</div>
+                    <div class="book-author">by ${book.author}</div>
+                    <div class="book-meta">
+                        <div class="book-quantity">${book.available}/${book.quantity} available</div>
+                    </div>
+                    <span class="book-status ${statusClass}">${statusText}</span>
+                </div>
+            `;
+            
+            bookCard.addEventListener('click', () => openBookModal(book));
+            bookGrid.appendChild(bookCard);
+        });
+    }
+
+    // Display books for librarian in My Books section
+    function displayLibrarianBooks(booksToShow = books) {
+        librarianBookGrid.innerHTML = '';
+        
+        if (booksToShow.length === 0) {
+            librarianBookGrid.innerHTML = '<p>No books found.</p>';
+            return;
+        }
+        
+        booksToShow.forEach(book => {
+            const bookCard = document.createElement('div');
+            bookCard.className = 'book-card';
+            
+            let statusClass = 'status-available';
+            let statusText = 'Available';
+            
+            if (book.available === 0) {
+                statusClass = 'status-out-of-stock';
+                statusText = 'Out of Stock';
+            } else if (book.available < book.quantity) {
+                statusClass = 'status-borrowed';
+                statusText = 'Limited Copies';
+            }
+            
+            bookCard.innerHTML = `
+                <div class="book-cover" style="background-color: ${getRandomColor()}">
+                    ${book.title.substring(0, 20)}${book.title.length > 20 ? '...' : ''}
+                </div>
+                <div class="book-info">
+                    <div class="book-title">${book.title}</div>
+                    <div class="book-author">by ${book.author}</div>
+                    <div class="book-meta">
+                        <div class="book-quantity">${book.available}/${book.quantity} available</div>
+                    </div>
+                    <span class="book-status ${statusClass}">${statusText}</span>
+                    <div class="book-actions">
+                        <button class="btn btn-primary edit-book-btn" data-book-id="${book.id}">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        ${book.available > 0 ? 
+                            `<button class="btn btn-success borrow-direct-btn" data-book-id="${book.id}">
+                                <i class="fas fa-book"></i> Borrow
+                            </button>` : 
+                            ''
+                        }
+                        <button class="btn btn-danger delete-direct-btn" data-book-id="${book.id}">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            const editBtn = bookCard.querySelector('.edit-book-btn');
+            const borrowBtn = bookCard.querySelector('.borrow-direct-btn');
+            const deleteBtn = bookCard.querySelector('.delete-direct-btn');
+            
+            if (editBtn) {
+                editBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    openEditBookModal(book);
+                });
+            }
+            
+            if (borrowBtn) {
+                borrowBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    borrowBook(book.id);
+                });
+            }
+            
+            if (deleteBtn) {
+                deleteBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    deleteBook(book.id);
+                });
+            }
+            
+            bookCard.addEventListener('click', () => openBookModal(book));
+            librarianBookGrid.appendChild(bookCard);
+        });
+    }
+
+    // Display borrowed books in My Books section
+    function displayBorrowedBooks() {
+        mybooksTable.innerHTML = '';
+        
+        if (!currentUser) return;
+        
+        if (borrowedBooks.length === 0) {
+            mybooksTable.innerHTML = '<tr><td colspan="7" style="text-align: center;">You have no borrowed books.</td></tr>';
+            return;
+        }
+        
+        borrowedBooks.forEach(book => {
+            const row = document.createElement('tr');
+            
+            const today = new Date();
+            const dueDate = new Date(book.due_date);
+            const isOverdue = today > dueDate && !book.returned_date;
+            
+            let dueDateDisplay = book.due_date;
+            if (isOverdue) {
+                dueDateDisplay = `<span class="overdue">${book.due_date} (Overdue)</span>`;
+            }
+            
+            row.innerHTML = `
+                <td>${book.book_title}</td>
+                <td>${book.author}</td>
+                <td>${book.borrowed_date}</td>
+                <td>${dueDateDisplay}</td>
+                <td>${book.returned_date || 'Not returned'}</td>
+                <td>${book.returned_date ? 'Returned' : 'Borrowed'}</td>
+                <td>
+                    ${!book.returned_date ? 
+                        `<button class="btn btn-warning return-book-btn" data-borrow-id="${book.id}">
+                            <i class="fas fa-undo"></i> Return
+                        </button>` : 
+                        '<span class="book-status status-available">Returned</span>'
+                    }
+                </td>
+            `;
+            
+            const returnBtn = row.querySelector('.return-book-btn');
+            if (returnBtn) {
+                returnBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    returnBook(book.id, book.book_id);
+                });
+            }
+            
+            mybooksTable.appendChild(row);
+        });
+    }
+
+    // Handle login
+    async function handleLogin(e) {
+        e.preventDefault();
+        
+        const email = document.getElementById('login-email').value;
+        const password = document.getElementById('login-password').value;
+        
+        try {
+            const user = await apiCall('/login', {
+                method: 'POST',
+                body: JSON.stringify({ email, password })
+            });
+            
+            currentUser = user;
+            localStorage.setItem('currentUser', JSON.stringify(user));
+            updateUIForUser();
+            await loadBooks();
+            await loadBorrowedBooks();
+            showDashboard();
+            showNotification(`Welcome back, ${user.name}!`, 'success');
+        } catch (error) {
+            console.error('Login error:', error);
+            showNotification(error.message || 'Login failed. Please try again.', 'error');
+        }
+    }
+
+    // Handle signup
+    async function handleSignup(e) {
+        e.preventDefault();
+        
+        const name = document.getElementById('signup-name').value;
+        const email = document.getElementById('signup-email').value;
+        const password = document.getElementById('signup-password').value;
+        const role = document.getElementById('signup-role').value;
+        
+        try {
+            const user = await apiCall('/register', {
+                method: 'POST',
+                body: JSON.stringify({ name, email, password, role })
+            });
+            
+            currentUser = user;
+            localStorage.setItem('currentUser', JSON.stringify(user));
+            updateUIForUser();
+            await loadBooks();
+            showDashboard();
+            showNotification(`Account created successfully! Welcome to LibraTrack, ${name}!`, 'success');
+        } catch (error) {
+            showNotification(error.message || 'Registration failed. Please try again.', 'error');
+        }
+    }
+
+    // Handle logout
+    function handleLogout() {
+        currentUser = null;
+        localStorage.removeItem('currentUser');
+        updateUIForUser();
+        showHomePage();
+        showNotification('You have been logged out successfully.', 'info');
+    }
+
+    // Open book details modal
+    function openBookModal(book) {
+        currentBookForBorrow = book;
+        
+        document.getElementById('modalBookTitle').textContent = book.title;
+        document.getElementById('modalBookAuthor').textContent = `by ${book.author}`;
+        document.getElementById('modalBookIsbn').textContent = book.isbn;
+        document.getElementById('modalBookGenre').textContent = book.genre;
+        document.getElementById('modalBookYear').textContent = book.publication_year;
+        document.getElementById('modalBookQuantity').textContent = `${book.available} of ${book.quantity}`;
+        
+        let statusClass = 'status-available';
+        let statusText = 'Available';
+        
+        if (book.available === 0) {
+            statusClass = 'status-out-of-stock';
+            statusText = 'Out of Stock';
+        } else if (book.available < book.quantity) {
+            statusClass = 'status-borrowed';
+            statusText = 'Limited Copies';
+        }
+        
+        const statusElement = document.getElementById('modalBookStatus');
+        statusElement.textContent = statusText;
+        statusElement.className = `book-status ${statusClass}`;
+        
+        document.getElementById('modalBookDescription').textContent = book.description || 'No description available.';
+        
+        if (currentUser) {
+            if (currentUser.role === 'student') {
+                studentActions.classList.remove('hidden');
+                librarianModalActions.classList.add('hidden');
+                
+                const userBorrowedCount = borrowedBooks.filter(b => !b.returned_date).length;
+                
+                if (book.available > 0 && userBorrowedCount < 3) {
+                    borrowBtn.disabled = false;
+                    borrowBtn.innerHTML = '<i class="fas fa-book"></i> Borrow Book';
+                    borrowBtn.onclick = () => borrowBook(book.id);
+                } else if (userBorrowedCount >= 3) {
+                    borrowBtn.disabled = true;
+                    borrowBtn.innerHTML = '<i class="fas fa-times"></i> Borrow Limit Reached (3 books)';
+                } else {
+                    borrowBtn.disabled = true;
+                    borrowBtn.innerHTML = '<i class="fas fa-times"></i> Out of Stock';
+                }
+            } else if (currentUser.role === 'librarian') {
+                studentActions.classList.add('hidden');
+                librarianModalActions.classList.remove('hidden');
+                deleteBookBtn.onclick = () => deleteBook(book.id);
+            }
+        } else {
+            studentActions.classList.add('hidden');
+            librarianModalActions.classList.add('hidden');
+        }
+        
+        document.getElementById('modalBookCover').style.backgroundColor = getRandomColor();
+        document.getElementById('modalBookCover').textContent = book.title;
+        
+        bookModal.style.display = 'flex';
+    }
+
+    // Open edit book modal
+    function openEditBookModal(book) {
+        document.getElementById('edit-book-id').value = book.id;
+        document.getElementById('edit-book-title').value = book.title;
+        document.getElementById('edit-book-author').value = book.author;
+        document.getElementById('edit-book-isbn').value = book.isbn;
+        document.getElementById('edit-book-genre').value = book.genre;
+        document.getElementById('edit-book-year').value = book.publication_year;
+        document.getElementById('edit-book-quantity').value = book.quantity;
+        document.getElementById('edit-book-description').value = book.description || '';
+        
+        editBookModal.style.display = 'flex';
+    }
+
+    // Open export data modal
+    function openExportDataModal() {
+        if (currentUser.role !== 'librarian') {
+            showNotification('Only librarians can export data', 'error');
+            return;
+        }
+        
+        // Reset modal state
+        exportOptions.forEach(option => option.classList.remove('selected'));
+        exportFilters.classList.add('hidden');
+        exportProgress.classList.add('hidden');
+        confirmExportBtn.disabled = true;
+        selectedExportType = null;
+        
+        // Set default dates
+        const today = new Date();
+        const oneMonthAgo = new Date();
+        oneMonthAgo.setMonth(today.getMonth() - 1);
+        
+        exportStartDate.value = oneMonthAgo.toISOString().split('T')[0];
+        exportEndDate.value = today.toISOString().split('T')[0];
+        
+        exportDataModal.style.display = 'flex';
+    }
+
+    // Select export option
+    function selectExportOption(option) {
+        exportOptions.forEach(opt => opt.classList.remove('selected'));
+        option.classList.add('selected');
+        
+        selectedExportType = option.getAttribute('data-type');
+        confirmExportBtn.disabled = false;
+        
+        // Show filters for borrowings and overdue exports
+        if (selectedExportType === 'borrowings' || selectedExportType === 'overdue') {
+            exportFilters.classList.remove('hidden');
+        } else {
+            exportFilters.classList.add('hidden');
+        }
+    }
+
+    // Handle export
+    async function handleExport() {
+        if (!selectedExportType) return;
+        
+        try {
+            // Show progress
+            exportProgress.classList.remove('hidden');
+            exportProgressFill.style.width = '0%';
+            
+            // Simulate progress
+            let progress = 0;
+            const progressInterval = setInterval(() => {
+                progress += 5;
+                exportProgressFill.style.width = `${progress}%`;
+                if (progress >= 100) clearInterval(progressInterval);
+            }, 50);
+            
+            // Prepare export data
+            let exportData = [];
+            let filename = '';
+            let headers = [];
+            
+            switch(selectedExportType) {
+                case 'books':
+                    exportData = await prepareBooksExport();
+                    filename = `library_books_${new Date().toISOString().split('T')[0]}`;
+                    break;
+                case 'borrowings':
+                    exportData = await prepareBorrowingsExport();
+                    filename = `borrowing_history_${new Date().toISOString().split('T')[0]}`;
+                    break;
+                case 'users':
+                    exportData = await prepareUsersExport();
+                    filename = `library_users_${new Date().toISOString().split('T')[0]}`;
+                    break;
+                case 'overdue':
+                    exportData = await prepareOverdueExport();
+                    filename = `overdue_books_${new Date().toISOString().split('T')[0]}`;
+                    break;
+            }
+            
+            // Clear progress interval
+            clearInterval(progressInterval);
+            exportProgressFill.style.width = '100%';
+            
+            // Export data
+            const format = exportFormat.value;
+            if (format === 'csv') {
+                exportToCSV(exportData, filename);
+            } else {
+                exportToJSON(exportData, filename);
+            }
+            
+            // Close modal and show success message
+            setTimeout(() => {
+                exportDataModal.style.display = 'none';
+                showNotification(`Data exported successfully as ${format.toUpperCase()}!`, 'success');
+            }, 500);
+            
+        } catch (error) {
+            console.error('Export error:', error);
+            exportProgress.classList.add('hidden');
+            showNotification('Error exporting data: ' + error.message, 'error');
+        }
+    }
+
+    // Prepare books data for export
+    async function prepareBooksExport() {
+        const booksData = await apiCall('/books');
+        
+        return booksData.map(book => ({
+            'Book ID': book.id,
+            'Title': book.title,
+            'Author': book.author,
+            'ISBN': book.isbn,
+            'Genre': book.genre,
+            'Publication Year': book.publication_year,
+            'Total Quantity': book.quantity,
+            'Available Copies': book.available,
+            'Description': book.description || ''
+        }));
+    }
+
+    // Prepare borrowings data for export
+    async function prepareBorrowingsExport() {
+        const borrowings = await authenticatedApiCall('/borrowings');
+        
+        // Apply filters if needed
+        let filteredBorrowings = borrowings;
+        
+        // Date range filter
+        if (exportStartDate.value && exportEndDate.value) {
+            filteredBorrowings = borrowings.filter(borrowing => {
+                const borrowedDate = new Date(borrowing.borrowed_date);
+                const startDate = new Date(exportStartDate.value);
+                const endDate = new Date(exportEndDate.value);
+                return borrowedDate >= startDate && borrowedDate <= endDate;
+            });
+        }
+        
+        // Status filter
+        if (exportStatus.value !== 'all') {
+            filteredBorrowings = filteredBorrowings.filter(borrowing => {
+                if (exportStatus.value === 'active') return !borrowing.returned_date;
+                if (exportStatus.value === 'returned') return borrowing.returned_date;
+                return true;
+            });
+        }
+        
+        return filteredBorrowings.map(borrowing => ({
+            'Borrowing ID': borrowing.id,
+            'Book Title': borrowing.book_title,
+            'Author': borrowing.author,
+            'User Name': borrowing.user_name,
+            'Borrowed Date': borrowing.borrowed_date,
+            'Due Date': borrowing.due_date,
+            'Returned Date': borrowing.returned_date || 'Not Returned',
+            'Status': borrowing.returned_date ? 'Returned' : 
+                     (new Date() > new Date(borrowing.due_date) ? 'Overdue' : 'Active')
+        }));
+    }
+
+    // Prepare users data for export
+    async function prepareUsersExport() {
+        // Note: This would require a new API endpoint to get all users
+        // For now, we'll return a placeholder
+        return [
+            {
+                'User ID': '1',
+                'Name': 'Demo Student',
+                'Email': 'student@example.com',
+                'Role': 'student',
+                'Joined Date': '2023-01-15'
+            },
+            {
+                'User ID': '2',
+                'Name': 'Demo Librarian',
+                'Email': 'librarian@example.com',
+                'Role': 'librarian',
+                'Joined Date': '2023-01-10'
+            }
+        ];
+    }
+
+    // Prepare overdue books data for export
+    async function prepareOverdueExport() {
+        const borrowings = await authenticatedApiCall('/borrowings');
+        const today = new Date();
+        
+        const overdueBooks = borrowings.filter(borrowing => {
+            const dueDate = new Date(borrowing.due_date);
+            return !borrowing.returned_date && today > dueDate;
+        });
+        
+        return overdueBooks.map(borrowing => ({
+            'Borrowing ID': borrowing.id,
+            'Book Title': borrowing.book_title,
+            'Author': borrowing.author,
+            'User Name': borrowing.user_name,
+            'Borrowed Date': borrowing.borrowed_date,
+            'Due Date': borrowing.due_date,
+            'Days Overdue': Math.floor((today - new Date(borrowing.due_date)) / (1000 * 60 * 60 * 24))
+        }));
+    }
+
+    // Export data to CSV
+    function exportToCSV(data, filename) {
+        if (data.length === 0) {
+            showNotification('No data to export', 'warning');
+            return;
+        }
+        
+        const headers = Object.keys(data[0]);
+        const csvRows = [headers.join(',')];
+        
+        // Convert data to CSV rows
+        data.forEach(row => {
+            const values = headers.map(header => {
+                const value = row[header] || '';
+                // Escape quotes and wrap in quotes if contains comma
+                const escaped = String(value).replace(/"/g, '""');
+                return escaped.includes(',') ? `"${escaped}"` : escaped;
+            });
+            csvRows.push(values.join(','));
+        });
+        
+        // Create and trigger download
+        const csvContent = csvRows.join('\n');
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        
+        link.setAttribute('href', url);
+        link.setAttribute('download', `${filename}.csv`);
+        link.style.visibility = 'hidden';
+        
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        // Clean up URL
+        setTimeout(() => URL.revokeObjectURL(url), 100);
+    }
+
+    // Export data to JSON
+    function exportToJSON(data, filename) {
+        if (data.length === 0) {
+            showNotification('No data to export', 'warning');
+            return;
+        }
+        
+        const jsonContent = JSON.stringify(data, null, 2);
+        const blob = new Blob([jsonContent], { type: 'application/json;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        
+        link.setAttribute('href', url);
+        link.setAttribute('download', `${filename}.json`);
+        link.style.visibility = 'hidden';
+        
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        // Clean up URL
+        setTimeout(() => URL.revokeObjectURL(url), 100);
+    }
+
+    // Handle add book
+    async function handleAddBook(e) {
+        e.preventDefault();
+        
+        const title = document.getElementById('book-title').value;
+        const author = document.getElementById('book-author').value;
+        const isbn = document.getElementById('book-isbn').value;
+        const genre = document.getElementById('book-genre').value;
+        const year = document.getElementById('book-year').value;
+        const quantity = document.getElementById('book-quantity').value;
+        const description = document.getElementById('book-description').value;
+        
+        if (!title || !author || !isbn || !genre || !year || !quantity) {
+            showNotification('Please fill in all required fields', 'error');
+            return;
+        }
+        
+        const bookData = {
+            title: title,
+            author: author,
+            isbn: isbn,
+            genre: genre,
+            publication_year: parseInt(year),
+            quantity: parseInt(quantity),
+            description: description
+        };
+        
+        try {
+            const newBook = await authenticatedApiCall('/books', {
+                method: 'POST',
+                body: JSON.stringify(bookData)
+            });
+            
+            // Auto-close modal and show success notification
+            addBookModal.style.display = 'none';
+            addBookForm.reset();
+            await loadBooks();
+            showNotification('Book added successfully!', 'success');
+            
+        } catch (error) {
+            console.error('❌ Error adding book:', error);
+            showNotification('Error: ' + error.message, 'error');
+        }
+    }
+
+    // Handle edit book
+    async function handleEditBook(e) {
+        e.preventDefault();
+        
+        const bookId = document.getElementById('edit-book-id').value;
+        const title = document.getElementById('edit-book-title').value;
+        const author = document.getElementById('edit-book-author').value;
+        const genre = document.getElementById('edit-book-genre').value;
+        const year = document.getElementById('edit-book-year').value;
+        const quantity = document.getElementById('edit-book-quantity').value;
+        const description = document.getElementById('edit-book-description').value;
+        
+        if (!title || !author || !genre || !year || !quantity) {
+            showNotification('Please fill in all required fields', 'error');
+            return;
+        }
+        
+        const bookData = {
+            title: title,
+            author: author,
+            genre: genre,
+            publication_year: parseInt(year),
+            quantity: parseInt(quantity),
+            description: description
+        };
+        
+        try {
+            await authenticatedApiCall(`/books/${bookId}`, {
+                method: 'PUT',
+                body: JSON.stringify(bookData)
+            });
+            
+            editBookModal.style.display = 'none';
+            editBookForm.reset();
+            await loadBooks();
+            await displayLibrarianBooks();
+            showNotification('Book updated successfully!', 'success');
+            
+        } catch (error) {
+            console.error('Error updating book:', error);
+            showNotification('Error: ' + error.message, 'error');
+        }
+    }
+
+    // Borrow a book
+    async function borrowBook(bookId) {
+        try {
+            await authenticatedApiCall(`/books/${bookId}/borrow`, {
+                method: 'POST',
+                body: JSON.stringify({ days: 30 })
+            });
+            
+            await loadBooks();
+            await loadBorrowedBooks();
+            updateUIForUser();
+            bookModal.style.display = 'none';
+            showNotification('Book borrowed successfully!', 'success');
+        } catch (error) {
+            showNotification(error.message || 'Failed to borrow book', 'error');
+        }
+    }
+
+    // Return a book
+    async function returnBook(borrowId, bookId) {
+        if (!confirm('Are you sure you want to return this book?')) return;
+        
+        try {
+            await authenticatedApiCall(`/books/${bookId}/return`, {
+                method: 'POST',
+                body: JSON.stringify({})
+            });
+            
+            await loadBooks();
+            await loadBorrowedBooks();
+            updateUIForUser();
+            showNotification('Book returned successfully!', 'success');
+        } catch (error) {
+            showNotification(error.message || 'Failed to return book', 'error');
+        }
+    }
+
+    // Delete a book
+    async function deleteBook(bookId) {
+        if (!confirm('Are you sure you want to delete this book?')) return;
+        
+        try {
+            await authenticatedApiCall(`/books/${bookId}`, {
+                method: 'DELETE'
+            });
+            
+            books = books.filter(book => book.id !== bookId);
+            displayBooks();
+            displayLibrarianBooks();
+            if (bookModal.style.display === 'flex') {
+                bookModal.style.display = 'none';
+            }
+            showNotification('Book deleted successfully', 'success');
+        } catch (error) {
+            showNotification(error.message || 'Failed to delete book', 'error');
+        }
+    }
+
+    // Update librarian statistics
+    async function updateLibrarianStats() {
+        try {
+            statsLoading.classList.remove('hidden');
+            const stats = await authenticatedApiCall('/statistics');
+            
+            document.getElementById('total-books').textContent = stats.totalBooks;
+            document.getElementById('available-books').textContent = stats.availableBooks;
+            document.getElementById('borrowed-books').textContent = stats.borrowedBooks;
+            document.getElementById('total-users').textContent = stats.totalUsers;
+            document.getElementById('overdue-books').textContent = stats.overdueBooks;
+            document.getElementById('total-borrowings').textContent = stats.totalBorrowings;
+            
+            statsLoading.classList.add('hidden');
+        } catch (error) {
+            console.error('Error loading statistics:', error);
+            statsLoading.classList.add('hidden');
+        }
+    }
+
+    // Display recent borrowings for librarian
+    async function displayRecentBorrowings() {
+        try {
+            const borrowings = await authenticatedApiCall('/borrowings');
+            allBorrowingsTable.innerHTML = '';
+            
+            const recentBorrowings = borrowings.slice(0, 10);
+            
+            if (recentBorrowings.length === 0) {
+                allBorrowingsTable.innerHTML = '<tr><td colspan="5" style="text-align: center;">No borrowings found.</td></tr>';
+                return;
+            }
+            
+            recentBorrowings.forEach(book => {
+                const row = document.createElement('tr');
+                
+                const today = new Date();
+                const dueDate = new Date(book.due_date);
+                const isOverdue = today > dueDate && !book.returned_date;
+                
+                let statusText = book.returned_date ? 'Returned' : 'Borrowed';
+                if (isOverdue) {
+                    statusText = 'Overdue';
+                }
+                
+                row.innerHTML = `
+                    <td>${book.book_title}</td>
+                    <td>${book.user_name}</td>
+                    <td>${book.borrowed_date}</td>
+                    <td>${book.due_date}</td>
+                    <td>${statusText}</td>
+                `;
+                allBorrowingsTable.appendChild(row);
+            });
+        } catch (error) {
+            console.error('Error loading recent borrowings:', error);
+        }
+    }
+
+    // Display all borrowings for librarian
+    async function displayAllBorrowings() {
+        try {
+            const borrowings = await authenticatedApiCall('/borrowings');
+            allBorrowingsList.innerHTML = '';
+            
+            if (borrowings.length === 0) {
+                allBorrowingsList.innerHTML = '<tr><td colspan="6" style="text-align: center;">No borrowings found.</td></tr>';
+                return;
+            }
+            
+            borrowings.forEach(book => {
+                const row = document.createElement('tr');
+                
+                const today = new Date();
+                const dueDate = new Date(book.due_date);
+                const isOverdue = today > dueDate && !book.returned_date;
+                
+                let statusText = book.returned_date ? 'Returned' : 'Borrowed';
+                if (isOverdue) {
+                    statusText = 'Overdue';
+                }
+                
+                row.innerHTML = `
+                    <td>${book.book_title}</td>
+                    <td>${book.user_name}</td>
+                    <td>${book.borrowed_date}</td>
+                    <td>${book.due_date}</td>
+                    <td>${book.returned_date || 'Not returned'}</td>
+                    <td>${statusText}</td>
+                `;
+                allBorrowingsList.appendChild(row);
+            });
+            
+            allBorrowingsModal.style.display = 'flex';
+        } catch (error) {
+            console.error('Error loading all borrowings:', error);
+            showNotification('Failed to load borrowings: ' + error.message, 'error');
+        }
+    }
+
+    // Search functionality
+    async function performSearch() {
+        await loadBooks();
+    }
+
+    // Function to generate random colors for book covers
+    function getRandomColor() {
+        const colors = [
+            '#3498db', '#2ecc71', '#e74c3c', '#f39c12', 
+            '#9b59b6', '#1abc9c', '#d35400', '#c0392b',
+            '#16a085', '#8e44ad', '#2c3e50', '#f1c40f'
+        ];
+        return colors[Math.floor(Math.random() * colors.length)];
+    }
+
+    // Initialize the application when the page loads
+    document.addEventListener('DOMContentLoaded', initApp);
+</script>
+</body>
+</html>
